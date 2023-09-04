@@ -1,14 +1,21 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { RawDataRepository } from './raw-data.repository';
-import * as fs from 'fs';
 import * as zlib from 'zlib';
-import { createReadStream } from 'fs';
 import * as csvParser from 'csv-parser';
 import { Readable } from 'stream';
+import { RawDataBody } from 'src/interface/interface';
 
 @Injectable()
-export class UploadService {
+export class RawDataService {
   constructor(private readonly rawDataRepository: RawDataRepository) {}
+
+  async getData(data: RawDataBody) {
+    if (data.enodebId || data.cellId || data.startDate ) {
+      return await this.rawDataRepository.findAll(data);
+    } else {
+      return await this.rawDataRepository.getAll();
+    }
+  }
 
   async uploadAndInsertData(file: Express.Multer.File) {
     if (!file) {
