@@ -14,7 +14,7 @@ export class UploadController {
     @Query('startDate') startDate?: Date,
     @Query('endDate') endDate?: Date,
   ): Promise<RawData[]> {
-    return this.rawDataService.getData(
+    return this.rawDataService.getGraph(
    {   enodebId,
       cellId,
       startDate,

@@ -29,8 +29,4 @@ export class RawDataRepository {
     return await this.rawDataModel.find(queries).exec();
   }
 
-  async getAll(): Promise<RawData[]> {
-    return await this.rawDataModel.find().exec();
-  }
-  
 }

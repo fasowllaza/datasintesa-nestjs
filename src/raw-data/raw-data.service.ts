@@ -3,19 +3,30 @@ import { RawDataRepository } from './raw-data.repository';
 import * as zlib from 'zlib';
 import * as csvParser from 'csv-parser';
 import { Readable } from 'stream';
-import { RawDataBody } from 'src/interface/interface';
+import { RawDataBody, RawDataResponse } from 'src/interface/interface';
 
 @Injectable()
 export class RawDataService {
   constructor(private readonly rawDataRepository: RawDataRepository) {}
 
   async getData(data: RawDataBody) {
-    if (data.enodebId || data.cellId || data.startDate ) {
       return await this.rawDataRepository.findAll(data);
-    } else {
-      return await this.rawDataRepository.getAll();
-    }
   }
+
+  async getGraph(body: RawDataBody) {
+    return await this.rawDataRepository.findAll(body).then( datas => {
+      let result = []
+      datas.forEach((data:RawDataResponse) => {
+        const availability = data.availDur*100/900
+        const resultTime = data.resultTime
+        result.push({
+          availability,
+          resultTime
+        })
+      })
+      return result
+    } )
+}
 
   async uploadAndInsertData(file: Express.Multer.File) {
     if (!file) {
